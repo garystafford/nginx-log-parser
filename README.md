@@ -17,10 +17,10 @@ Dockerized HTTP server, written in Go, that returns random HTTP status code.
 Clone, build, and test locally
 ```bash
 git clone https://github.com/garystafford/nginx-log-parser.git
-cd nginx-log-parser
+cd $_
 docker-compose up -d
 for i in {1..50}; do curl localhost:8080/status; done
-sh ./analyze.sh
+sh ./analyzer.sh
 ```
 
 ## Details
