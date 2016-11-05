@@ -19,7 +19,7 @@ Clone, build, and test locally
 git clone https://github.com/garystafford/nginx-log-parser.git
 cd $_
 docker-compose up -d
-for i in {1..50}; do curl localhost:8080/status; done
+for i in {1..100}; do curl -I localhost:8080/status; done
 sh ./analyzer.sh
 ```
 
@@ -60,7 +60,7 @@ docker run --name random-status-server -d -p 8000:8000 random-status-server
 
 Generate server traffic
 ```bash
-for i in {1..100}; do http localhost:8080/status; done
+for i in {1..100}; do curl -I localhost:8080/status; done
 ```
 
 Analyze logs
