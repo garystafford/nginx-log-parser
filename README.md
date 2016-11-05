@@ -2,7 +2,7 @@
 
 Dockerized HTTP server, written in Go, that returns random HTTP status code. Useful for testing how an application responds to unexpected HTTP status codes.
 
-### Highlights
+## Highlights
 - Builds two networked Docker containers
 - First container is running latest NGINX
 - Second container is running the HTTP server
@@ -15,7 +15,7 @@ Dockerized HTTP server, written in Go, that returns random HTTP status code. Use
 - NGINX logs are written to disk for analysis vs. to stdout/stderr
 - NGINX access log can be analyzed using simple bash commands
 
-### Quick Start
+## Quick Start
 Clone, build, and test locally
 ```bash
 git clone https://github.com/garystafford/nginx-log-parser.git
@@ -82,7 +82,7 @@ Sample distribution of status codes
 350 Total
 ```
 
-### Developer Details
+## Development Details
 Build and run HTTP server locally
 ```bash
 go run go-server.go
@@ -145,7 +145,7 @@ docker exec -it random-status-nginx cat /var/log/nginx/random_status_access.log 
 cut -d '"' -f3 | cut -d ' ' -f2 | echo $(wc -l) Total
 ```
 
-### References
+## References
 - [Go HTTP Status Reference](https://golang.org/src/net/http/status.go)
 - [Configuring the Nginx Error Log and Access Log](https://www.keycdn.com/support/nginx-error-log/)
 - [Parsing NGINX Logs](https://easyengine.io/tutorials/nginx/log-parsing/)
