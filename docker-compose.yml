@@ -1,0 +1,26 @@
+version: '2'
+services:
+  goserver:
+    build: ./goserver
+    image: random-status-goserver:latest
+    ports:
+     - "8000:8000"
+    networks:
+      - status
+    restart: always
+    hostname: goserver
+    container_name: random-status-goserver
+  nginx:
+    build: ./nginx
+    image: random-status-nginx:latest
+    ports:
+     - "8080:80"
+     - "8443:443"
+    networks:
+      - status
+    restart: always
+    hostname: nginx
+    container_name: random-status-nginx
+networks:
+  status:
+    driver: bridge
