@@ -2,7 +2,7 @@
 
 Dockerized HTTP server, written in Go, that returns random HTTP status code. Useful for testing how an application responds to unexpected HTTP status codes.
 
-Highlights:
+### Highlights
 - Builds two networked Docker containers
 - First container is running latest NGINX
 - Second container is running the HTTP server
