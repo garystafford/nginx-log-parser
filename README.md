@@ -19,8 +19,8 @@ Clone, build, and test locally
 git clone https://github.com/garystafford/nginx-log-parser.git
 cd nginx-log-parser
 docker-compose up -d
-curl http localhost:8080/status
-docker exec -it random-status-nginx cat /var/log/nginx/random_status_access.log
+for i in {1..50}; do curl localhost:8080/status; done
+sh ./analyze.sh
 ```
 
 ## Details
@@ -30,15 +30,16 @@ go run go-server.go
 go build random-status.go
 ```
 
-Build binary for Linux
+Build binary for Linux (Busybox Docker container)
 ```bash
 GOOS=linux GOARCH=amd64 go build random-status.go
 ```
 
-Grab default NGINX configuration files
+Grab the default NGINX configuration files
 ```bash
-docker cp random-status-nginx:/etc/nginx/conf.d/default.conf default.conf
-docker cp random-status-nginx:/etc/nginx/nginx.conf nginx.conf
+docker run --name nginx-tmp nginx
+docker cp nginx-tmp:/etc/nginx/conf.d/default.conf default.conf
+docker cp nginx-tmp:/etc/nginx/nginx.conf nginx.conf
 ```
 
 Create Docker images and containers, start server
@@ -62,23 +63,53 @@ Generate server traffic
 for i in {1..100}; do http localhost:8080/status; done
 ```
 
-Analyze log
+Analyze logs
 ```bash
+# run script
+sh ./analyze.sh
+
+# log
 docker exec -it random-status-nginx cat /var/log/nginx/random_status_access.log
 
+# status code counts, sorted
 docker exec -it random-status-nginx cat /var/log/nginx/random_status_access.log | \
   cut -d '"' -f3 | cut -d ' ' -f2 | sort | uniq -c | sort -rn
 
+# status code counts, sorted, within date range
 docker exec -it random-status-nginx cat /var/log/nginx/random_status_access.log | \
   sed -n '/05\/Nov\/2016:15:07:02/,/05\/Nov\/2016:15:07:07/ p' | \
   cut -d '"' -f3 | cut -d ' ' -f2 | sort | uniq -c | sort -rn
+
+# status code counts total
+docker exec -it random-status-nginx cat /var/log/nginx/random_status_access.log | \
+cut -d '"' -f3 | cut -d ' ' -f2 | echo $(wc -l) Total
 ```
 
-Misc Commands
-```bash
-nginx -v -s reload
-docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
-```
+Sample distribution of status codes
+```text
+27 200
+19 404
+14 500
+ 5 503
+ 5 304
+ 3 400
+ 3 301
+ 3 300
+ 2 550
+ 2 410
+ 2 403
+ 2 401
+ 2 307
+ 1 302
+
+ 90 Total
+ ```
 
 ## References
 - [Go HTTP Status Reference](https://golang.org/src/net/http/status.go)
+- [Configuring the Nginx Error Log and Access Log](https://www.keycdn.com/support/nginx-error-log/)
+- [Parsing NGINX Logs](https://easyengine.io/tutorials/nginx/log-parsing/)
+- [NGINX Reverse Proxy](http://www.ubuntugeek.com/using-nginx-as-a-reverse-proxy-to-get-the-most-out-of-your-vps.html)
+- [Returning Status Codes In Golang](http://learntogoogleit.com/post/63098708081/returning-status-codes-in-golang)
+- [Cross Compile Your Go Programs](https://www.goinggo.net/2013/10/cross-compile-your-go-programs.html)
+- [Cross Compiling Go](http://golangcookbook.com/chapters/running/cross-compiling/)
