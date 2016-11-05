@@ -24,6 +24,44 @@ docker-compose up -d
 for i in {1..100}; do curl -I localhost:8080/status; done
 sh ./analyzer.sh
 ```
+Sample output from server
+```text
+HTTP/1.1 200 OK
+Server: nginx/1.11.1
+Date: Sat, 05 Nov 2016 17:42:50 GMT
+Content-Type: text/plain; charset=utf-8
+Content-Length: 48
+Connection: keep-alive
+
+HTTP/1.1 503 Service Unavailable
+Server: nginx/1.11.1
+Date: Sat, 05 Nov 2016 17:42:50 GMT
+Content-Type: text/plain; charset=utf-8
+Content-Length: 48
+Connection: keep-alive
+
+HTTP/1.1 404 Not Found
+Server: nginx/1.11.1
+Date: Sat, 05 Nov 2016 17:42:50 GMT
+Content-Type: text/plain; charset=utf-8
+Content-Length: 48
+Connection: keep-alive
+
+HTTP/1.1 200 OK
+Server: nginx/1.11.1
+Date: Sat, 05 Nov 2016 17:42:50 GMT
+Content-Type: text/plain; charset=utf-8
+Content-Length: 48
+Connection: keep-alive
+
+HTTP/1.1 500 Internal Server Error
+Server: nginx/1.11.1
+Date: Sat, 05 Nov 2016 17:42:50 GMT
+Content-Type: text/plain; charset=utf-8
+Content-Length: 48
+Connection: keep-alive
+```
+
 Sample distribution of status codes
 ```text
 95 200
