@@ -1,6 +1,6 @@
 # Random Status Codes
 
-Simple HTTP server that returns random HTTP status code, written in Go.
+Dockerized HTTP server, written in Go, that returns random HTTP status code.
 - Builds two networked Docker containers
 - First container is running NGINX
 - Second container is running the HTTP server
@@ -10,6 +10,8 @@ Simple HTTP server that returns random HTTP status code, written in Go.
 - Go source code contains two ways to return codes
   - Common codes, with weighted results (default)
   - All code, evenly distributed results
+- NGINX logs are written to disk for analysis vs. to stdout/stderr
+- NGINX log results can be analyzed using simple bash commands
 
 ## Quick Start
 Clone, build, and test locally
@@ -18,10 +20,11 @@ git clone https://github.com/garystafford/nginx-log-parser.git
 cd nginx-log-parser
 docker-compose up -d
 curl http localhost:8080/status
+docker exec -it random-status-nginx cat /var/log/nginx/random_status_access.log
 ```
 
 ## Details
-Build and run server locally
+Build and run HTTP server locally
 ```bash
 go run go-server.go
 go build random-status.go
@@ -56,11 +59,13 @@ docker run --name random-status-server -d -p 8000:8000 random-status-server
 
 Generate server traffic
 ```bash
-for i in {1..10}; do http localhost:8080/status; done
-docker exec -it random-status-nginx cat /var/log/nginx/random_status_access.log
+for i in {1..100}; do http localhost:8080/status; done
 ```
+
 Analyze log
 ```bash
+docker exec -it random-status-nginx cat /var/log/nginx/random_status_access.log
+
 docker exec -it random-status-nginx cat /var/log/nginx/random_status_access.log | \
   cut -d '"' -f3 | cut -d ' ' -f2 | sort | uniq -c | sort -rn
 
@@ -69,13 +74,11 @@ docker exec -it random-status-nginx cat /var/log/nginx/random_status_access.log 
   cut -d '"' -f3 | cut -d ' ' -f2 | sort | uniq -c | sort -rn
 ```
 
-
 Misc Commands
 ```bash
-docker exec -it random-status-nginx nohup ./usr/local/bin/random-status &
-docker exec -it random-status-nginx bash
-apt-get update -y && apt-get install wget
 nginx -v -s reload
-cd /tmp && ./random-status
 docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
 ```
+
+## References
+- [Go HTTP Status Reference](https://golang.org/src/net/http/status.go)
