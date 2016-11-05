@@ -87,23 +87,23 @@ cut -d '"' -f3 | cut -d ' ' -f2 | echo $(wc -l) Total
 
 Sample distribution of status codes
 ```text
-27 200
-19 404
-14 500
- 5 503
- 5 304
- 3 400
- 3 301
- 3 300
- 2 550
- 2 410
- 2 403
- 2 401
- 2 307
- 1 302
-
- 90 Total
- ```
+95 200
+62 404
+60 500
+33 503
+12 300
+11 403
+11 304
+11 301
+10 410
+10 302
+ 9 400
+ 8 401
+ 8 307
+ 6 550
+ 4 501
+350 Total
+```
 
 ## References
 - [Go HTTP Status Reference](https://golang.org/src/net/http/status.go)
